@@ -16,4 +16,8 @@ function isNameValid(name: string): boolean {
     return /^[a-zA-Z]+$/.test(name) && name.length >= 1 && name.length <= 100;
 }
 
-export {generateHash, isNameValid};
+function isEmailAddressValid(emailAddress: string): boolean {
+    return /^[A-Za-z0-9+_.-]+@(.+\..+)$/.test(emailAddress);
+}
+
+export {generateHash, isNameValid, isEmailAddressValid};
