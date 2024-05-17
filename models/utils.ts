@@ -29,4 +29,8 @@ function isTitleValid(title: string): boolean {
     return /./.test(title) && title.length >= 1 && title.length <= 100;
 }
 
+function isDescriptionValid(description: string): boolean {
+    return /./.test(description);
+}
+
 export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid, isTitleValid};
