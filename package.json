@@ -16,6 +16,7 @@
     "express": "~4.16.1",
     "express-prettify": "^0.1.2",
     "forever": "^4.0.3",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "mysql2": "^3.6.1",
     "sequelize": "^6.33.0"
