@@ -1,6 +1,7 @@
 import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
 
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
@@ -21,6 +22,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+
+const apiRouter = require('./routes/api');
+
+app.use('/api', apiRouter);
 
 app.get('*', (request: Request, response: Response) => {
     response.status(404).json(

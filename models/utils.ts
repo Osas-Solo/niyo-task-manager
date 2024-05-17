@@ -25,6 +25,10 @@ function isPasswordValid(password: string) {
         password.length >= 8 && password.length <= 20;
 }
 
+function isPasswordConfirmed(password: string, passwordConfirmer: string) {
+    return password === passwordConfirmer;
+}
+
 function isTitleValid(title: string): boolean {
     return /./.test(title) && title.length >= 1 && title.length <= 100;
 }
@@ -55,4 +59,4 @@ function isTaskCompletedValid(isCompleted: any): boolean {
     return typeof isCompleted === 'boolean';
 }
 
-export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid, isTitleValid, isDescriptionValid, isTimeValid, isStartTimeValid, isEndTimeValid, isTaskCompletedValid};
+export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid, isPasswordConfirmed, isTitleValid, isDescriptionValid, isTimeValid, isStartTimeValid, isEndTimeValid, isTaskCompletedValid};

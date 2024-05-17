@@ -15,5 +15,8 @@ const databaseConnection = new sequelize_1.Sequelize(DB_NAME, DB_USER, DB_PASSWO
     host: DB_HOST,
     port: Number(DB_PORT),
     dialect: 'mysql',
+    define: {
+        timestamps: false,
+    },
 });
 exports.default = databaseConnection;

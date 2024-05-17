@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isTaskCompletedValid = exports.isEndTimeValid = exports.isStartTimeValid = exports.isTimeValid = exports.isDescriptionValid = exports.isTitleValid = exports.isPasswordValid = exports.isEmailAddressValid = exports.isNameValid = exports.generateHash = void 0;
+exports.isTaskCompletedValid = exports.isEndTimeValid = exports.isStartTimeValid = exports.isTimeValid = exports.isDescriptionValid = exports.isTitleValid = exports.isPasswordConfirmed = exports.isPasswordValid = exports.isEmailAddressValid = exports.isNameValid = exports.generateHash = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 function generateHash(data) {
@@ -27,6 +27,10 @@ function isPasswordValid(password) {
         password.length >= 8 && password.length <= 20;
 }
 exports.isPasswordValid = isPasswordValid;
+function isPasswordConfirmed(password, passwordConfirmer) {
+    return password === passwordConfirmer;
+}
+exports.isPasswordConfirmed = isPasswordConfirmed;
 function isTitleValid(title) {
     return /./.test(title) && title.length >= 1 && title.length <= 100;
 }
