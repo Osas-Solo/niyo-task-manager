@@ -12,4 +12,8 @@ function generateHash(data: string): string {
     return hashedData.digest('hex');
 }
 
-export {generateHash};
+function isNameValid(name: string): boolean {
+    return /^[a-zA-Z]+$/.test(name) && name.length >= 1 && name.length <= 100;
+}
+
+export {generateHash, isNameValid};
