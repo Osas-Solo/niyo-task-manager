@@ -1,5 +1,5 @@
 import {DataTypes, Model} from 'sequelize';
-import databaseConnection from "../config/database";
+import databaseConnection from '../config/database';
 
 class Task extends Model {
     declare id: number;

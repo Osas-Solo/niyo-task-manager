@@ -1,5 +1,5 @@
 import {DataTypes, Model, NonAttribute} from 'sequelize';
-import databaseConnection from "../config/database";
+import databaseConnection from '../config/database';
 
 class User extends Model {
     declare id: number;
