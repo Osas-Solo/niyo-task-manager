@@ -33,4 +33,11 @@ function isDescriptionValid(description: string): boolean {
     return /./.test(description);
 }
 
+function isStartTimeValid(startTime: string): boolean {
+    const currentTime = new Date();
+    const convertedStartTime = new Date(startTime);
+
+    return convertedStartTime.valueOf() >= currentTime.valueOf();
+}
+
 export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid, isTitleValid};
