@@ -33,11 +33,22 @@ function isDescriptionValid(description: string): boolean {
     return /./.test(description);
 }
 
+function isTimeValid(time: string): boolean {
+    return !isNaN((new Date(time)).valueOf());
+}
+
 function isStartTimeValid(startTime: string): boolean {
     const currentTime = new Date();
     const convertedStartTime = new Date(startTime);
 
-    return convertedStartTime.valueOf() >= currentTime.valueOf();
+    return isTimeValid(startTime) && (convertedStartTime.valueOf() >= currentTime.valueOf());
 }
 
-export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid, isTitleValid};
+function isEndTimeValid(startTime: string, endTime: string): boolean {
+    const convertedStartTime = new Date(startTime);
+    const convertedEndTime = new Date(endTime);
+
+    return isTimeValid(endTime) && (convertedEndTime.valueOf() > convertedStartTime.valueOf());
+}
+
+export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid, isTitleValid, isDescriptionValid, isTimeValid, isStartTimeValid, isEndTimeValid};

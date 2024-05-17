@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isPasswordValid = exports.isEmailAddressValid = exports.isNameValid = exports.generateHash = void 0;
+exports.isEndTimeValid = exports.isStartTimeValid = exports.isTimeValid = exports.isDescriptionValid = exports.isTitleValid = exports.isPasswordValid = exports.isEmailAddressValid = exports.isNameValid = exports.generateHash = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 function generateHash(data) {
@@ -27,3 +27,27 @@ function isPasswordValid(password) {
         password.length >= 8 && password.length <= 20;
 }
 exports.isPasswordValid = isPasswordValid;
+function isTitleValid(title) {
+    return /./.test(title) && title.length >= 1 && title.length <= 100;
+}
+exports.isTitleValid = isTitleValid;
+function isDescriptionValid(description) {
+    return /./.test(description);
+}
+exports.isDescriptionValid = isDescriptionValid;
+function isTimeValid(time) {
+    return !isNaN((new Date(time)).valueOf());
+}
+exports.isTimeValid = isTimeValid;
+function isStartTimeValid(startTime) {
+    const currentTime = new Date();
+    const convertedStartTime = new Date(startTime);
+    return isTimeValid(startTime) && (convertedStartTime.valueOf() >= currentTime.valueOf());
+}
+exports.isStartTimeValid = isStartTimeValid;
+function isEndTimeValid(startTime, endTime) {
+    const convertedStartTime = new Date(startTime);
+    const convertedEndTime = new Date(endTime);
+    return isTimeValid(endTime) && (convertedEndTime.valueOf() > convertedStartTime.valueOf());
+}
+exports.isEndTimeValid = isEndTimeValid;
