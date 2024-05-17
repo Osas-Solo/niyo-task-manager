@@ -51,4 +51,8 @@ function isEndTimeValid(startTime: string, endTime: string): boolean {
     return isTimeValid(endTime) && (convertedEndTime.valueOf() > convertedStartTime.valueOf());
 }
 
-export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid, isTitleValid, isDescriptionValid, isTimeValid, isStartTimeValid, isEndTimeValid};
+function isTaskCompletedValid(isCompleted: any): boolean {
+    return typeof isCompleted === 'boolean';
+}
+
+export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid, isTitleValid, isDescriptionValid, isTimeValid, isStartTimeValid, isEndTimeValid, isTaskCompletedValid};
