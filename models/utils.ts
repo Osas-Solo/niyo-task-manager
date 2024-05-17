@@ -20,4 +20,9 @@ function isEmailAddressValid(emailAddress: string): boolean {
     return /^[A-Za-z0-9+_.-]+@(.+\..+)$/.test(emailAddress);
 }
 
-export {generateHash, isNameValid, isEmailAddressValid};
+function isPasswordValid(password: string) {
+    return /[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password) &&
+        password.length >= 8 && password.length <= 20;
+}
+
+export {generateHash, isNameValid, isEmailAddressValid, isPasswordValid};
