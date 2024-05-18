@@ -16,7 +16,9 @@ function saveToken(response: Response, user: User) {
     response.cookie('userID', user.id, {maxAge: (numberOfMilliSecondsInADay * 30) + Date.now()});
 }
 
-function authenticateToken(token: string, userID: number) {
+function authenticateToken(request: Request, userID: number) {
+    const token = request.header('Authorization');
+
     if (!token) {
         return false;
     }

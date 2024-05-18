@@ -36,6 +36,7 @@ Task.init({
     isCompleted: {
         type: sequelize_1.DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
     },
 }, {
     tableName: 'tasks',
