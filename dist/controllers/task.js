@@ -52,7 +52,7 @@ exports.createTask = (request, response) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (error) {
         console.log(error);
-        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to create task');
     }
 });
 const validateTaskCreation = (title, description, startTime, endTime) => __awaiter(void 0, void 0, void 0, function* () {
@@ -117,7 +117,7 @@ exports.retrieveIndividualTask = (request, response) => __awaiter(void 0, void 0
     }
     catch (error) {
         console.log(error);
-        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to retrieve task');
     }
 });
 exports.retrieveMultipleTasks = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
@@ -141,7 +141,7 @@ exports.retrieveMultipleTasks = (request, response) => __awaiter(void 0, void 0,
     }
     catch (error) {
         console.log(error);
-        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to retrieve tasks');
     }
 });
 const sendSuccessfulIndividualTaskResponse = (response, task) => {
@@ -212,7 +212,7 @@ exports.updateTask = (request, response) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (error) {
         console.log(error);
-        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to update task');
     }
 });
 const validateTaskUpdate = (title, description, startTime, endTime, isCompleted) => __awaiter(void 0, void 0, void 0, function* () {
@@ -272,7 +272,7 @@ exports.deleteTask = (request, response) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (error) {
         console.log(error);
-        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to delete task');
     }
 });
 const sendSuccessfulTaskDeleteResponse = (response) => {

@@ -67,7 +67,7 @@ exports.createTask = async (request: Request, response: Response) => {
     } catch (error) {
         console.log(error);
 
-        sendInternalServerErrorResponse(response, 'trying to signup');
+        sendInternalServerErrorResponse(response, 'trying to create task');
     }
 }
 
@@ -145,7 +145,7 @@ exports.retrieveIndividualTask = async (request: Request, response: Response) =>
     } catch (error) {
         console.log(error);
 
-        sendInternalServerErrorResponse(response, 'trying to signup');
+        sendInternalServerErrorResponse(response, 'trying to retrieve task');
     }
 }
 
@@ -173,7 +173,7 @@ exports.retrieveMultipleTasks = async (request: Request, response: Response) => 
     } catch (error) {
         console.log(error);
 
-        sendInternalServerErrorResponse(response, 'trying to signup');
+        sendInternalServerErrorResponse(response, 'trying to retrieve tasks');
     }
 }
 
@@ -256,7 +256,7 @@ exports.updateTask = async (request: Request, response: Response) => {
     } catch (error) {
         console.log(error);
 
-        sendInternalServerErrorResponse(response, 'trying to signup');
+        sendInternalServerErrorResponse(response, 'trying to update task');
     }
 };
 
@@ -328,7 +328,7 @@ exports.deleteTask = async (request: Request, response: Response) => {
     } catch (error) {
         console.log(error);
 
-        sendInternalServerErrorResponse(response, 'trying to signup');
+        sendInternalServerErrorResponse(response, 'trying to delete task');
     }
 };
 
