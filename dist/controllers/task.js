@@ -235,3 +235,44 @@ const validateTaskUpdate = (title, description, startTime, endTime, isCompleted)
     }
     return taskError;
 });
+exports.deleteTask = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userID = Number(request.params.userID);
+        let taskID = Number(request.params.taskID);
+        if (isNaN(userID)) {
+            userID = 0;
+        }
+        if (isNaN(taskID)) {
+            taskID = 0;
+        }
+        if ((0, token_authenticator_1.authenticateToken)(request, userID)) {
+            let task = yield Task_1.default.findOne({
+                where: {
+                    id: taskID,
+                    userID: userID,
+                }
+            });
+            if (task) {
+                yield task.destroy();
+                sendSuccessfulTaskDeleteResponse(response);
+            }
+            else {
+                (0, response_1.sendNotFoundResponse)(response, 'task', taskID);
+            }
+        }
+        else {
+            (0, response_1.sendForbiddenResponse)(response);
+        }
+    }
+    catch (error) {
+        console.log(error);
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+    }
+});
+const sendSuccessfulTaskDeleteResponse = (response) => {
+    response.status(204).json({
+        status: 204,
+        message: 'Not Content',
+        data: {},
+    });
+};

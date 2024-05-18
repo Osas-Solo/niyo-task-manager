@@ -248,7 +248,7 @@ exports.updateTask = async (request: Request, response: Response) => {
 
         sendInternalServerErrorResponse(response, 'trying to signup');
     }
-}
+};
 
 const validateTaskUpdate = async (title: string, description: string, startTime: string, endTime: string, isCompleted: any) => {
     const taskError: TaskErrors = {
@@ -280,4 +280,51 @@ const validateTaskUpdate = async (title: string, description: string, startTime:
     }
 
     return taskError;
+};
+
+exports.deleteTask = async (request: Request, response: Response) => {
+    try {
+        let userID: number = Number(request.params.userID);
+        let taskID: number = Number(request.params.taskID);
+
+        if (isNaN(userID)) {
+            userID = 0;
+        }
+
+        if (isNaN(taskID)) {
+            taskID = 0;
+        }
+
+        if (authenticateToken(request, userID)) {
+            let task = await Task.findOne({
+                where: {
+                    id: taskID,
+                    userID: userID,
+                }
+            });
+
+            if (task) {
+                await task.destroy();
+                sendSuccessfulTaskDeleteResponse(response);
+            } else {
+                sendNotFoundResponse(response, 'task', taskID);
+            }
+        } else {
+            sendForbiddenResponse(response);
+        }
+    } catch (error) {
+        console.log(error);
+
+        sendInternalServerErrorResponse(response, 'trying to signup');
+    }
+};
+
+const sendSuccessfulTaskDeleteResponse = (response: Response) => {
+    response.status(204).json(
+        {
+            status: 204,
+            message: 'Not Content',
+            data: {},
+        }
+    );
 };
