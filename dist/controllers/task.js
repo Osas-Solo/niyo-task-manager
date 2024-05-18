@@ -75,21 +75,12 @@ const validateTaskCreation = (title, description, startTime, endTime) => __await
     }
     return taskError;
 });
-const sendSuccessfulTaskCreationResponse = function (response, newTask) {
+const sendSuccessfulTaskCreationResponse = (response, newTask) => {
     response.status(201).json({
         status: 201,
         message: 'Created',
         data: {
             task: newTask,
-        }
-    });
-};
-const sendSuccessfulIndividualTaskResponse = function (response, task) {
-    response.status(200).json({
-        status: 200,
-        message: 'OK',
-        data: {
-            task: task,
         }
     });
 };
@@ -126,3 +117,44 @@ exports.retrieveIndividualTask = (request, response) => __awaiter(void 0, void 0
         (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
     }
 });
+exports.retrieveMultipleTasks = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userID = Number(request.params.userID);
+        if (isNaN(userID)) {
+            userID = 0;
+        }
+        if ((0, token_authenticator_1.authenticateToken)(request, userID)) {
+            const tasks = yield Task_1.default.findAll({
+                where: {
+                    userID: userID,
+                }
+            });
+            sendSuccessfulMultipleTasksResponse(response, tasks);
+        }
+        else {
+            (0, response_1.sendForbiddenResponse)(response);
+        }
+    }
+    catch (error) {
+        console.log(error);
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+    }
+});
+const sendSuccessfulIndividualTaskResponse = (response, task) => {
+    response.status(200).json({
+        status: 200,
+        message: 'OK',
+        data: {
+            task: task,
+        }
+    });
+};
+const sendSuccessfulMultipleTasksResponse = (response, tasks) => {
+    response.status(200).json({
+        status: 200,
+        message: 'OK',
+        data: {
+            tasks: tasks,
+        }
+    });
+};

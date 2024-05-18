@@ -10,6 +10,7 @@ router.post('/users/login', userController.login);
 router.post('/users/signin', userController.login);
 
 router.post('/users/:id/tasks', taskController.createTask);
+router.get('/users/:userID/tasks', taskController.retrieveMultipleTasks);
 router.get('/users/:userID/tasks/:taskID', taskController.retrieveIndividualTask);
 
 module.exports = router;

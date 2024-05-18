@@ -1,20 +1,12 @@
 import {Request, Response} from 'express';
-import {
-    generateHash, isDescriptionValid,
-    isEmailAddressValid, isEndTimeValid,
-    isNameValid,
-    isPasswordConfirmed,
-    isPasswordValid, isStartTimeValid,
-    isTitleValid
-} from '../models/utils';
-import User from '../models/User';
+import {isDescriptionValid, isEndTimeValid, isStartTimeValid, isTitleValid} from '../models/utils';
 import {
     sendForbiddenResponse,
     sendInternalServerErrorResponse,
     sendNotFoundResponse,
     sendUnauthorisedErrorResponse
 } from './response';
-import {authenticateToken, retrieveToken, saveToken} from './token-authenticator';
+import {authenticateToken} from './token-authenticator';
 import Task from '../models/Task';
 
 interface TaskErrors {
@@ -97,25 +89,13 @@ const validateTaskCreation = async (title: string, description: string, startTim
     return taskError;
 };
 
-const sendSuccessfulTaskCreationResponse = function (response: Response, newTask: Task) {
+const sendSuccessfulTaskCreationResponse = (response: Response, newTask: Task) => {
     response.status(201).json(
         {
             status: 201,
             message: 'Created',
             data: {
                 task: newTask,
-            }
-        }
-    );
-};
-
-const sendSuccessfulIndividualTaskResponse = function (response: Response, task: Task) {
-    response.status(200).json(
-        {
-            status: 200,
-            message: 'OK',
-            data: {
-                task: task,
             }
         }
     );
@@ -156,3 +136,53 @@ exports.retrieveIndividualTask = async (request: Request, response: Response) =>
         sendInternalServerErrorResponse(response, 'trying to signup');
     }
 }
+
+exports.retrieveMultipleTasks = async (request: Request, response: Response) => {
+    try {
+        let userID: number = Number(request.params.userID);
+
+        if (isNaN(userID)) {
+            userID = 0;
+        }
+
+        if (authenticateToken(request, userID)) {
+            const tasks = await Task.findAll({
+                where: {
+                    userID: userID,
+                }
+            });
+
+            sendSuccessfulMultipleTasksResponse(response, tasks);
+        } else {
+            sendForbiddenResponse(response);
+        }
+    } catch (error) {
+        console.log(error);
+
+        sendInternalServerErrorResponse(response, 'trying to signup');
+    }
+}
+
+const sendSuccessfulIndividualTaskResponse = (response: Response, task: Task) => {
+    response.status(200).json(
+        {
+            status: 200,
+            message: 'OK',
+            data: {
+                task: task,
+            }
+        }
+    );
+};
+
+const sendSuccessfulMultipleTasksResponse = (response: Response, tasks: Task[]) => {
+    response.status(200).json(
+        {
+            status: 200,
+            message: 'OK',
+            data: {
+                tasks: tasks,
+            }
+        }
+    );
+};
