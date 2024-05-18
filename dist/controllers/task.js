@@ -158,3 +158,80 @@ const sendSuccessfulMultipleTasksResponse = (response, tasks) => {
         }
     });
 };
+exports.updateTask = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userID = Number(request.params.userID);
+        let taskID = Number(request.params.taskID);
+        if (isNaN(userID)) {
+            userID = 0;
+        }
+        if (isNaN(taskID)) {
+            taskID = 0;
+        }
+        if ((0, token_authenticator_1.authenticateToken)(request, userID)) {
+            let task = yield Task_1.default.findOne({
+                where: {
+                    id: taskID,
+                    userID: userID,
+                }
+            });
+            if (task) {
+                const title = request.body.title.trim();
+                const description = request.body.description.trim();
+                const startTime = request.body.startTime.trim();
+                const endTime = request.body.endTime.trim();
+                const isCompleted = Boolean(Number(request.body.isCompleted.trim()));
+                const taskUpdateError = yield validateTaskUpdate(title, description, startTime, endTime, isCompleted);
+                const areTaskDetailsValid = Object.values(taskUpdateError).every((error) => error === '');
+                if (areTaskDetailsValid) {
+                    task = yield task.update({
+                        title: title,
+                        description: description,
+                        startTime: startTime,
+                        endTime: endTime,
+                        isCompleted: isCompleted,
+                    });
+                    sendSuccessfulIndividualTaskResponse(response, task);
+                }
+                else {
+                    (0, response_1.sendUnauthorisedErrorResponse)(response, taskUpdateError);
+                }
+            }
+            else {
+                (0, response_1.sendNotFoundResponse)(response, 'task', taskID);
+            }
+        }
+        else {
+            (0, response_1.sendForbiddenResponse)(response);
+        }
+    }
+    catch (error) {
+        console.log(error);
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+    }
+});
+const validateTaskUpdate = (title, description, startTime, endTime, isCompleted) => __awaiter(void 0, void 0, void 0, function* () {
+    const taskError = {
+        titleError: '',
+        descriptionError: '',
+        startTimeError: '',
+        endTimeError: '',
+        isCompletedError: '',
+    };
+    if (!(0, utils_1.isTitleValid)(title)) {
+        taskError.titleError = 'Sorry, task titles can only have a maximum of 100 characters';
+    }
+    if (!(0, utils_1.isDescriptionValid)(description)) {
+        taskError.descriptionError = 'Please, describe your task';
+    }
+    if (!(0, utils_1.isStartTimeValid)(startTime)) {
+        taskError.startTimeError = 'Sorry, time must be in the format: 2024-10-03 12:23:04 and start time must be a future time period';
+    }
+    if (!(0, utils_1.isEndTimeValid)(startTime, endTime)) {
+        taskError.endTimeError = 'Sorry, time must be in the format: 2024-10-03 12:23:04 and times must be a future time period after start time';
+    }
+    if (!(0, utils_1.isTaskCompletedValid)(isCompleted)) {
+        taskError.isCompletedError = 'Sorry, select only true or false';
+    }
+    return taskError;
+});

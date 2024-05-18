@@ -1,5 +1,11 @@
 import {Request, Response} from 'express';
-import {isDescriptionValid, isEndTimeValid, isStartTimeValid, isTitleValid} from '../models/utils';
+import {
+    isDescriptionValid,
+    isEndTimeValid,
+    isStartTimeValid,
+    isTaskCompletedValid,
+    isTitleValid
+} from '../models/utils';
 import {
     sendForbiddenResponse,
     sendInternalServerErrorResponse,
@@ -185,4 +191,93 @@ const sendSuccessfulMultipleTasksResponse = (response: Response, tasks: Task[]) 
             }
         }
     );
+};
+
+exports.updateTask = async (request: Request, response: Response) => {
+    try {
+        let userID: number = Number(request.params.userID);
+        let taskID: number = Number(request.params.taskID);
+
+        if (isNaN(userID)) {
+            userID = 0;
+        }
+
+        if (isNaN(taskID)) {
+            taskID = 0;
+        }
+
+        if (authenticateToken(request, userID)) {
+            let task = await Task.findOne({
+                where: {
+                    id: taskID,
+                    userID: userID,
+                }
+            });
+
+            if (task) {
+                const title: string = request.body.title.trim();
+                const description: string = request.body.description.trim();
+                const startTime: string = request.body.startTime.trim();
+                const endTime: string = request.body.endTime.trim();
+                const isCompleted: boolean = Boolean(Number(request.body.isCompleted.trim()));
+
+                const taskUpdateError = await validateTaskUpdate(title, description, startTime, endTime, isCompleted);
+                const areTaskDetailsValid = Object.values(taskUpdateError).every((error) => error === '');
+
+                if (areTaskDetailsValid) {
+                    task = await task.update({
+                        title: title,
+                        description: description,
+                        startTime: startTime,
+                        endTime: endTime,
+                        isCompleted: isCompleted,
+                    });
+
+                    sendSuccessfulIndividualTaskResponse(response, task);
+                } else {
+                    sendUnauthorisedErrorResponse(response, taskUpdateError);
+                }
+            } else {
+                sendNotFoundResponse(response, 'task', taskID);
+            }
+        } else {
+            sendForbiddenResponse(response);
+        }
+    } catch (error) {
+        console.log(error);
+
+        sendInternalServerErrorResponse(response, 'trying to signup');
+    }
+}
+
+const validateTaskUpdate = async (title: string, description: string, startTime: string, endTime: string, isCompleted: any) => {
+    const taskError: TaskErrors = {
+        titleError: '',
+        descriptionError: '',
+        startTimeError: '',
+        endTimeError: '',
+        isCompletedError: '',
+    }
+
+    if (!isTitleValid(title)) {
+        taskError.titleError = 'Sorry, task titles can only have a maximum of 100 characters';
+    }
+
+    if (!isDescriptionValid(description)) {
+        taskError.descriptionError = 'Please, describe your task';
+    }
+
+    if (!isStartTimeValid(startTime)) {
+        taskError.startTimeError = 'Sorry, time must be in the format: 2024-10-03 12:23:04 and start time must be a future time period';
+    }
+
+    if (!isEndTimeValid(startTime, endTime)) {
+        taskError.endTimeError = 'Sorry, time must be in the format: 2024-10-03 12:23:04 and times must be a future time period after start time';
+    }
+
+    if (!isTaskCompletedValid(isCompleted)) {
+        taskError.isCompletedError = 'Sorry, select only true or false';
+    }
+
+    return taskError;
 };
