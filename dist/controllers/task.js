@@ -16,6 +16,7 @@ const utils_1 = require("../models/utils");
 const response_1 = require("./response");
 const token_authenticator_1 = require("./token-authenticator");
 const Task_1 = __importDefault(require("../models/Task"));
+const index_1 = require("../index");
 const jwt = require('jsonwebtoken');
 exports.createTask = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -38,6 +39,7 @@ exports.createTask = (request, response) => __awaiter(void 0, void 0, void 0, fu
                     startTime: startTime,
                     endTime: endTime,
                 });
+                index_1.io.emit(`task_${newTask.id}`, { message: 'Task Creation', newTask: newTask });
                 sendSuccessfulTaskCreationResponse(response, newTask);
             }
             else {
@@ -102,6 +104,7 @@ exports.retrieveIndividualTask = (request, response) => __awaiter(void 0, void 0
                 }
             });
             if (task) {
+                index_1.io.emit(`task_${task.id}`, { message: 'Read Individual Task', task: task });
                 sendSuccessfulIndividualTaskResponse(response, task);
             }
             else {
@@ -129,6 +132,7 @@ exports.retrieveMultipleTasks = (request, response) => __awaiter(void 0, void 0,
                     userID: userID,
                 }
             });
+            index_1.io.emit(`tasks_${userID}`, { message: 'Read All Tasks', task: tasks });
             sendSuccessfulMultipleTasksResponse(response, tasks);
         }
         else {
@@ -191,6 +195,7 @@ exports.updateTask = (request, response) => __awaiter(void 0, void 0, void 0, fu
                         endTime: endTime,
                         isCompleted: isCompleted,
                     });
+                    index_1.io.emit(`task_${task.id}`, { message: 'Task Update', task: task });
                     sendSuccessfulIndividualTaskResponse(response, task);
                 }
                 else {
@@ -253,6 +258,7 @@ exports.deleteTask = (request, response) => __awaiter(void 0, void 0, void 0, fu
                 }
             });
             if (task) {
+                index_1.io.emit(`task_${task.id}`, { message: 'Task Delete', task: task });
                 yield task.destroy();
                 sendSuccessfulTaskDeleteResponse(response);
             }

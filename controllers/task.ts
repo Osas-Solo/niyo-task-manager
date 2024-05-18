@@ -15,6 +15,8 @@ import {
 import {authenticateToken} from './token-authenticator';
 import Task from '../models/Task';
 
+import {io} from '../index';
+
 interface TaskErrors {
     titleError: string,
     descriptionError: string,
@@ -52,6 +54,8 @@ exports.createTask = async (request: Request, response: Response) => {
                         endTime: endTime,
                     }
                 );
+
+                io.emit(`task_${newTask.id}`, {message: 'Task Creation', newTask: newTask});
 
                 sendSuccessfulTaskCreationResponse(response, newTask);
             } else {
@@ -129,6 +133,8 @@ exports.retrieveIndividualTask = async (request: Request, response: Response) =>
             });
 
             if (task) {
+                io.emit(`task_${task.id}`, {message: 'Read Individual Task', task: task});
+
                 sendSuccessfulIndividualTaskResponse(response, task);
             } else {
                 sendNotFoundResponse(response, 'task', taskID);
@@ -157,6 +163,8 @@ exports.retrieveMultipleTasks = async (request: Request, response: Response) => 
                     userID: userID,
                 }
             });
+
+            io.emit(`tasks_${userID}`, {message: 'Read All Tasks', task: tasks});
 
             sendSuccessfulMultipleTasksResponse(response, tasks);
         } else {
@@ -233,6 +241,8 @@ exports.updateTask = async (request: Request, response: Response) => {
                         isCompleted: isCompleted,
                     });
 
+                    io.emit(`task_${task.id}`, {message: 'Task Update', task: task});
+
                     sendSuccessfulIndividualTaskResponse(response, task);
                 } else {
                     sendUnauthorisedErrorResponse(response, taskUpdateError);
@@ -304,7 +314,10 @@ exports.deleteTask = async (request: Request, response: Response) => {
             });
 
             if (task) {
+                io.emit(`task_${task.id}`, {message: 'Task Delete', task: task});
+
                 await task.destroy();
+
                 sendSuccessfulTaskDeleteResponse(response);
             } else {
                 sendNotFoundResponse(response, 'task', taskID);

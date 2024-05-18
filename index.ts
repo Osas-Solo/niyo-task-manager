@@ -1,7 +1,7 @@
 import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
+import {Socket} from 'socket.io';
 
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
@@ -9,8 +9,14 @@ const prettify = require('express-prettify');
 
 dotenv.config();
 
+const http = require('http');
+const socketIO = require('socket.io');
+
 const app: Express = express();
 const port: string | undefined = process.env.PORT;
+
+const server = http.createServer(app);
+const io = socketIO(server);
 
 app.use(prettify({
     always: true,
@@ -37,6 +43,12 @@ app.get('*', (request: Request, response: Response) => {
     );
 });
 
-app.listen(port, () => {
+io.on('connection', (socket: Socket) => {
+    console.log('Client connected');
+});
+
+server.listen(port, () => {
     console.log(`⚡️[Niyo Task Manager API]: Server is running at http://localhost:${port}`);
 });
+
+export {io};
