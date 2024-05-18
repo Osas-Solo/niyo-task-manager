@@ -30,7 +30,7 @@ function sendForbiddenResponse(response: Response) {
     );
 }
 
-function sendNotFoundResponse(response: Response, item: string, id: string) {
+function sendNotFoundResponse(response: Response, item: string, id: number) {
     response.status(404).json(
         {
             status: 404,

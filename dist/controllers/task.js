@@ -93,3 +93,36 @@ const sendSuccessfulIndividualTaskResponse = function (response, task) {
         }
     });
 };
+exports.retrieveIndividualTask = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userID = Number(request.params.userID);
+        let taskID = Number(request.params.taskID);
+        if (isNaN(userID)) {
+            userID = 0;
+        }
+        if (isNaN(taskID)) {
+            taskID = 0;
+        }
+        if ((0, token_authenticator_1.authenticateToken)(request, userID)) {
+            const task = yield Task_1.default.findOne({
+                where: {
+                    id: taskID,
+                    userID: userID,
+                }
+            });
+            if (task) {
+                sendSuccessfulIndividualTaskResponse(response, task);
+            }
+            else {
+                (0, response_1.sendNotFoundResponse)(response, 'task', taskID);
+            }
+        }
+        else {
+            (0, response_1.sendForbiddenResponse)(response);
+        }
+    }
+    catch (error) {
+        console.log(error);
+        (0, response_1.sendInternalServerErrorResponse)(response, 'trying to signup');
+    }
+});

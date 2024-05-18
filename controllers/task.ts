@@ -8,7 +8,12 @@ import {
     isTitleValid
 } from '../models/utils';
 import User from '../models/User';
-import {sendForbiddenResponse, sendInternalServerErrorResponse, sendUnauthorisedErrorResponse} from './response';
+import {
+    sendForbiddenResponse,
+    sendInternalServerErrorResponse,
+    sendNotFoundResponse,
+    sendUnauthorisedErrorResponse
+} from './response';
 import {authenticateToken, retrieveToken, saveToken} from './token-authenticator';
 import Task from '../models/Task';
 
@@ -115,3 +120,39 @@ const sendSuccessfulIndividualTaskResponse = function (response: Response, task:
         }
     );
 };
+
+exports.retrieveIndividualTask = async (request: Request, response: Response) => {
+    try {
+        let userID: number = Number(request.params.userID);
+        let taskID: number = Number(request.params.taskID);
+
+        if (isNaN(userID)) {
+            userID = 0;
+        }
+
+        if (isNaN(taskID)) {
+            taskID = 0;
+        }
+
+        if (authenticateToken(request, userID)) {
+            const task = await Task.findOne({
+                where: {
+                    id: taskID,
+                    userID: userID,
+                }
+            });
+
+            if (task) {
+                sendSuccessfulIndividualTaskResponse(response, task);
+            } else {
+                sendNotFoundResponse(response, 'task', taskID);
+            }
+        } else {
+            sendForbiddenResponse(response);
+        }
+    } catch (error) {
+        console.log(error);
+
+        sendInternalServerErrorResponse(response, 'trying to signup');
+    }
+}
