@@ -420,7 +420,7 @@ completion status.
 - `endTime` (text, required): Task's end time
 
 - `isCompleted` (boolean, required): Task's completion status indicated with true or false (for the purpose of testing on
-  Postman), 1 and 0 can be used as its value
+  Postman, 1 and 0 can be used as its value)
 
 #### Response
 
